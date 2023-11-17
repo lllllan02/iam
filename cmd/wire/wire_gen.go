@@ -9,11 +9,12 @@ package wire
 import (
 	"github.com/lllllan02/iam/pkg/app"
 	"github.com/lllllan02/iam/pkg/config"
+	"github.com/lllllan02/iam/pkg/log"
 )
 
 // Injectors from wire.go:
 
-func NewWire(configConfig *config.Config) (*app.App, func(), error) {
+func NewWire(configConfig *config.Config, logger *log.Logger) (*app.App, func(), error) {
 	appApp := newApp()
 	return appApp, func() {
 	}, nil

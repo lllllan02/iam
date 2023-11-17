@@ -4,21 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lllllan02/iam/pkg/log"
 )
 
 type Server struct {
 	*gin.Engine
-	httpSrv *http.Server
-	host    string
-	port    int
 
-	// TODO log
-	logger *log.Logger
+	port int
+	host string
+
+	httpSrv *http.Server
+	logger  *log.Logger
 }
 
 type Option func(s *Server)
@@ -53,23 +53,23 @@ func (s *Server) Start(ctx context.Context) error {
 	}
 
 	if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		s.logger.Fatalf("listen: %s\n", err)
+		s.logger.Sugar().Fatalf("listen: %s\n", err)
 	}
 
 	return nil
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	s.logger.Println("Shutting down server...")
+	s.logger.Sugar().Info("Shutting down server...")
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := s.httpSrv.Shutdown(ctx); err != nil {
-		s.logger.Fatal("Server forced to shutdown: ", err)
+		s.logger.Sugar().Fatal("Server forced to shutdown: ", err)
 	}
 
-	s.logger.Println("Server exiting")
+	s.logger.Sugar().Info("Server exiting")
 	return nil
 }

@@ -32,6 +32,16 @@ type Config struct {
 			Prefix   string `default:""`
 		}
 	}
+
+	Log struct {
+		Compress   bool   `default:"true"`              // Compression or not
+		MaxAge     int    `default:"7"`                 // Maximum number of days the file can be saved
+		MaxSize    int    `default:"1024"`              // Maximum size unit for each log file: M
+		MaxBackups int    `default:"30"`                // The maximum number of backups that can be saved for log files
+		Level      string `default:"info"`              // log level: debug, info, warn, error
+		FileName   string `default:"./logs/server.log"` // log file path
+		Encoding   string `default:"console"`           // json, console
+	}
 }
 
 func NewConfig(path string) *Config {
@@ -77,4 +87,8 @@ func initDefaultsRecursive(v *viper.Viper, t reflect.Type, prefix string) {
 			}
 		}
 	}
+}
+
+func (conf *Config) IsProdEnv() bool {
+	return strings.Contains(conf.Env, "prod")
 }

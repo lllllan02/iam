@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 	"github.com/lllllan02/iam/pkg/app"
 	"github.com/lllllan02/iam/pkg/config"
+	"github.com/lllllan02/iam/pkg/log"
 )
 
 func newApp() *app.App {
@@ -15,7 +16,7 @@ func newApp() *app.App {
 	)
 }
 
-func NewWire(*config.Config) (*app.App, func(), error) {
+func NewWire(*config.Config, *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
 		newApp,
 	))
