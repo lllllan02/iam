@@ -1,0 +1,45 @@
+package server
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/lllllan02/iam/internal/middleware"
+	"github.com/lllllan02/iam/pkg/config"
+	"github.com/lllllan02/iam/pkg/log"
+	"github.com/lllllan02/iam/pkg/server/http"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/swag/example/basic/docs"
+)
+
+func NewIAMServer(
+	conf *config.Config,
+	logger *log.Logger,
+) *http.Server {
+	gin.SetMode(gin.DebugMode)
+	s := http.NewServer(
+		gin.Default(),
+		logger,
+		http.WithServerHost(conf.Server.Host),
+		http.WithServerPort(conf.Server.HttpPort),
+	)
+
+	// swagger doc
+	docs.SwaggerInfo.BasePath = "/v1"
+	s.GET("/swagger/*any", ginSwagger.WrapHandler(
+		swaggerfiles.Handler,
+		// ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", conf.GetInt("app.http.port"))),
+		ginSwagger.DefaultModelsExpandDepth(-1),
+	))
+
+	// middleware
+	s.Use(
+		middleware.CORSMiddleware(),
+		middleware.ResponseLogMiddleware(logger),
+		middleware.RequestLogMiddleware(logger),
+	)
+
+	// router
+	s.GET("/ping", func(ctx *gin.Context) { ctx.JSON(200, "pong") })
+
+	return s
+}

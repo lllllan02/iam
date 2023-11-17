@@ -7,21 +7,27 @@
 package wire
 
 import (
+	"github.com/google/wire"
+	"github.com/lllllan02/iam/internal/server"
 	"github.com/lllllan02/iam/pkg/app"
 	"github.com/lllllan02/iam/pkg/config"
 	"github.com/lllllan02/iam/pkg/log"
+	"github.com/lllllan02/iam/pkg/server/http"
 )
 
 // Injectors from wire.go:
 
 func NewWire(configConfig *config.Config, logger *log.Logger) (*app.App, func(), error) {
-	appApp := newApp()
+	httpServer := server.NewIAMServer(configConfig, logger)
+	appApp := newApp(httpServer)
 	return appApp, func() {
 	}, nil
 }
 
 // wire.go:
 
-func newApp() *app.App {
-	return app.NewApp(app.WithName("iam-server"))
+var serverSet = wire.NewSet(server.NewIAMServer)
+
+func newApp(iamServer *http.Server) *app.App {
+	return app.NewApp(app.WithServer(iamServer), app.WithName("iam-server"))
 }

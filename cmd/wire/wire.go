@@ -5,19 +5,27 @@ package wire
 
 import (
 	"github.com/google/wire"
+	"github.com/lllllan02/iam/internal/server"
 	"github.com/lllllan02/iam/pkg/app"
 	"github.com/lllllan02/iam/pkg/config"
 	"github.com/lllllan02/iam/pkg/log"
+	"github.com/lllllan02/iam/pkg/server/http"
 )
 
-func newApp() *app.App {
+var serverSet = wire.NewSet(
+	server.NewIAMServer,
+)
+
+func newApp(iamServer *http.Server) *app.App {
 	return app.NewApp(
+		app.WithServer(iamServer),
 		app.WithName("iam-server"),
 	)
 }
 
 func NewWire(*config.Config, *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
+		serverSet,
 		newApp,
 	))
 }

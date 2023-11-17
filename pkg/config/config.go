@@ -12,9 +12,9 @@ type Config struct {
 	Env string `default:"local"`
 
 	Server struct {
+		HttpPort int    `default:"8000"`
+		GrpcPort int    `default:"8001"`
 		Host     string `default:"0.0.0.0"`
-		HttpPort uint16 `default:"8000"`
-		GrpcPort uint16 `default:"8001"`
 	}
 
 	Data struct {

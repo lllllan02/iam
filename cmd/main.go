@@ -24,8 +24,8 @@ func main() {
 	}
 	defer cleanup()
 
-	logger.Info("server start", zap.String("host", fmt.Sprintf("http://127.0.0.1:%d", conf.Server.HttpPort)))
-	logger.Info("docs addr", zap.String("addr", fmt.Sprintf("http://127.0.0.1:%d/swagger/index.html", conf.Server.HttpPort)))
+	logger.Info("server start", zap.String("host", fmt.Sprintf("http://%s:%d", conf.Server.Host, conf.Server.HttpPort)))
+	logger.Info("docs addr", zap.String("addr", fmt.Sprintf("http://%s:%d/swagger/index.html", conf.Server.Host, conf.Server.HttpPort)))
 
 	if err = app.Run(context.Background()); err != nil {
 		panic(err)
