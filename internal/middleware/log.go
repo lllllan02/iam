@@ -17,6 +17,9 @@ func RequestLogMiddleware(logger *log.Logger) gin.HandlerFunc {
 		// The configuration is initialized once per request
 		trace := md5.Md5(uuid.NewString())
 
+		// 将 trace 写入返回的 Header 中，方便错误追踪
+		ctx.Header("trace", trace)
+
 		logger.WithValue(ctx, zap.String("trace", trace))
 		logger.WithValue(ctx, zap.String("request_method", ctx.Request.Method))
 		logger.WithValue(ctx, zap.Any("request_headers", ctx.Request.Header))
