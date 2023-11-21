@@ -16,6 +16,12 @@ var serverSet = wire.NewSet(
 	server.NewIAMServer,
 )
 
+// var dataSet = wire.newSet(
+// 	data.NewDB,
+// 	data.NewRedis,
+// 	data.NewData,
+// )
+
 func newApp(iamServer *http.Server) *app.App {
 	return app.NewApp(
 		app.WithServer(iamServer),
@@ -26,6 +32,7 @@ func newApp(iamServer *http.Server) *app.App {
 func NewWire(*config.Config, *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
 		serverSet,
+		// dataSet,
 		newApp,
 	))
 }

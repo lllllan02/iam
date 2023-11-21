@@ -19,6 +19,7 @@ type Config struct {
 
 	Data struct {
 		Mysql struct {
+			Debug    bool   `default:"false"`
 			Addr     string `default:"127.0.0.1:3306"`
 			User     string `default:"root"`
 			Password string `default:"123456"`
