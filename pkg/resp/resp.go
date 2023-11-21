@@ -22,4 +22,8 @@ func JsonResponse(c *gin.Context, err error, data interface{}) {
 		Reference: coder.Reference,
 		Data:      data,
 	})
+
+	if err != nil {
+		c.Error(err)
+	}
 }

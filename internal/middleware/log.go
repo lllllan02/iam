@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"time"
 
@@ -21,8 +22,6 @@ func RequestLogMiddleware(logger *log.Logger) gin.HandlerFunc {
 		ctx.Header("trace", trace)
 
 		logger.WithValue(ctx, zap.String("trace", trace))
-		logger.WithValue(ctx, zap.String("request_method", ctx.Request.Method))
-		logger.WithValue(ctx, zap.Any("request_headers", ctx.Request.Header))
 		logger.WithValue(ctx, zap.String("request_url", ctx.Request.URL.String()))
 
 		if ctx.Request.Body != nil {
@@ -43,6 +42,10 @@ func ResponseLogMiddleware(logger *log.Logger) gin.HandlerFunc {
 		startTime := time.Now()
 
 		ctx.Next()
+
+		if err := ctx.Errors.Last(); err != nil {
+			logger.WithContext(ctx).Info("Error", zap.String("error", fmt.Sprintf("%+v", err.Err)))
+		}
 
 		duration := time.Since(startTime).String()
 		ctx.Header("X-Response-Time", duration)
