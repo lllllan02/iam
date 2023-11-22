@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lllllan02/iam/internal/handler"
 	"github.com/lllllan02/iam/internal/middleware"
 	"github.com/lllllan02/iam/pkg/code"
 	"github.com/lllllan02/iam/pkg/config"
@@ -17,6 +18,7 @@ import (
 func NewIAMServer(
 	conf *config.Config,
 	logger *log.Logger,
+	userHandler *handler.UserHandler,
 ) *http.Server {
 	gin.SetMode(gin.DebugMode)
 	s := http.NewServer(

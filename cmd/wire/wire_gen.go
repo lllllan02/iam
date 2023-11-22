@@ -8,7 +8,10 @@ package wire
 
 import (
 	"github.com/google/wire"
+	"github.com/lllllan02/iam/internal/data"
+	"github.com/lllllan02/iam/internal/handler"
 	"github.com/lllllan02/iam/internal/server"
+	"github.com/lllllan02/iam/internal/service"
 	"github.com/lllllan02/iam/pkg/app"
 	"github.com/lllllan02/iam/pkg/config"
 	"github.com/lllllan02/iam/pkg/log"
@@ -18,7 +21,16 @@ import (
 // Injectors from wire.go:
 
 func NewWire(configConfig *config.Config, logger *log.Logger) (*app.App, func(), error) {
-	httpServer := server.NewIAMServer(configConfig, logger)
+	handlerHandler := handler.NewHandler(logger)
+	db := data.NewDB(configConfig, logger)
+	client := data.NewRedis(configConfig)
+	dataData := data.NewData(db, client, logger)
+	transaction := data.NewTransaction(dataData)
+	serviceService := service.NewService(logger, transaction)
+	userData := data.NewUserData(dataData)
+	userService := service.NewUserService(serviceService, userData)
+	userHandler := handler.NewUserHandler(handlerHandler, userService)
+	httpServer := server.NewIAMServer(configConfig, logger, userHandler)
 	appApp := newApp(httpServer)
 	return appApp, func() {
 	}, nil
@@ -27,6 +39,12 @@ func NewWire(configConfig *config.Config, logger *log.Logger) (*app.App, func(),
 // wire.go:
 
 var serverSet = wire.NewSet(server.NewIAMServer)
+
+var handlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
+
+var serviceSet = wire.NewSet(service.NewService, service.NewUserService)
+
+var dataSet = wire.NewSet(data.NewDB, data.NewRedis, data.NewData, data.NewTransaction, data.NewUserData)
 
 func newApp(iamServer *http.Server) *app.App {
 	return app.NewApp(app.WithServer(iamServer), app.WithName("iam-server"))

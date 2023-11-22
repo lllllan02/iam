@@ -5,7 +5,10 @@ package wire
 
 import (
 	"github.com/google/wire"
+	"github.com/lllllan02/iam/internal/data"
+	"github.com/lllllan02/iam/internal/handler"
 	"github.com/lllllan02/iam/internal/server"
+	"github.com/lllllan02/iam/internal/service"
 	"github.com/lllllan02/iam/pkg/app"
 	"github.com/lllllan02/iam/pkg/config"
 	"github.com/lllllan02/iam/pkg/log"
@@ -16,11 +19,23 @@ var serverSet = wire.NewSet(
 	server.NewIAMServer,
 )
 
-// var dataSet = wire.newSet(
-// 	data.NewDB,
-// 	data.NewRedis,
-// 	data.NewData,
-// )
+var handlerSet = wire.NewSet(
+	handler.NewHandler,
+	handler.NewUserHandler,
+)
+
+var serviceSet = wire.NewSet(
+	service.NewService,
+	service.NewUserService,
+)
+
+var dataSet = wire.NewSet(
+	data.NewDB,
+	data.NewRedis,
+	data.NewData,
+	data.NewTransaction,
+	data.NewUserData,
+)
 
 func newApp(iamServer *http.Server) *app.App {
 	return app.NewApp(
@@ -31,8 +46,10 @@ func newApp(iamServer *http.Server) *app.App {
 
 func NewWire(*config.Config, *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
-		serverSet,
-		// dataSet,
 		newApp,
+		serverSet,
+		handlerSet,
+		serviceSet,
+		dataSet,
 	))
 }
