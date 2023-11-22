@@ -1,8 +1,6 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type User struct {
 	Model
@@ -19,7 +17,5 @@ func (u *User) TableName() string {
 
 // AfterCreate run after create database record.
 func (u *User) AfterCreate(tx *gorm.DB) error {
-	u.InstanceID = NewInstanceID("uid-", u.ID)
-
-	return tx.Save(u).Error
+	return tx.Model(&u).Update("instance_id", NewInstanceID("uid-", u.ID)).Error
 }
