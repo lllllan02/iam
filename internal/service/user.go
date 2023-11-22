@@ -1,16 +1,30 @@
 package service
 
-import "github.com/lllllan02/iam/internal/data"
+import (
+	"context"
 
-type UserService struct {
-	*Service
+	"github.com/lllllan02/iam/internal/data"
+	"github.com/lllllan02/iam/internal/dto"
+)
 
-	userData *data.UserData
+type UserService interface {
+	// Register is used to register a user.
+	Register(c context.Context, req *dto.RegisterReq) (res *dto.RegisterRes, err error)
 }
 
-func NewUserService(service *Service, userData *data.UserData) *UserService {
-	return &UserService{
+type userService struct {
+	*Service
+
+	userData data.UserData
+}
+
+func NewUserService(service *Service, userData data.UserData) UserService {
+	return &userService{
 		Service:  service,
 		userData: userData,
 	}
+}
+
+func (u *userService) Register(c context.Context, req *dto.RegisterReq) (res *dto.RegisterRes, err error) {
+	return
 }

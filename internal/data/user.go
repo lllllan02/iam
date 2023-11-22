@@ -1,11 +1,22 @@
 package data
 
-type UserData struct {
-	*Data
+import (
+	"context"
+
+	"github.com/lllllan02/iam/internal/model"
+)
+
+type UserData interface {
+	// Create execute create user.
+	Create(c context.Context, user *model.User) error
 }
 
-func NewUserData(data *Data) *UserData {
-	return &UserData{
-		Data: data,
-	}
+type userData struct{ *Data }
+
+func NewUserData(data *Data) UserData {
+	return &userData{Data: data}
+}
+
+func (u *userData) Create(c context.Context, user *model.User) error {
+	return u.DB(c).Create(&user).Error
 }

@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/frankban/quicktest v1.14.4
 	github.com/gin-gonic/gin v1.9.1
+	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
 	github.com/redis/go-redis/v9 v9.3.0
