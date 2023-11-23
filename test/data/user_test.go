@@ -30,13 +30,15 @@ func TestUserData_Create(t *testing.T) {
 			CreatedAt:  time.Now(),
 			UpdatedAt:  time.Now(),
 		},
-		Nickname: "test",
+		Username: "test",
 		Password: "password",
 		Email:    "test@example.com",
 	}
 
 	mock.ExpectBegin()
-	mock.ExpectExec("INSERT INTO").WithArgs(user.InstanceID, user.CreatedAt, user.UpdatedAt, user.DeletedAt, user.Nickname, user.Password, user.Email).WillReturnResult(sqlmock.NewResult(1, 1))
+	// 针对 beforeCreate 对 username 的重复检查进行的 select
+	mock.ExpectQuery("SELECT").WithArgs(user.Username).WillReturnRows(sqlmock.NewRows([]string{"count(*)"}))
+	mock.ExpectExec("INSERT INTO").WithArgs(user.InstanceID, user.CreatedAt, user.UpdatedAt, user.DeletedAt, user.Username, user.Password, user.Email).WillReturnResult(sqlmock.NewResult(1, 1))
 	// 针对 afterCreate 对 instance_id 的更新，此处注意需要忽略 updated_at 字段（因为具体时间匹配不上，可以直接忽略）
 	mock.ExpectExec("UPDATE").WithArgs(user.InstanceID, sqlmock.AnyArg(), 1).WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()

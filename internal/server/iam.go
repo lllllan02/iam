@@ -49,5 +49,7 @@ func NewIAMServer(
 		resp.JsonResponse(ctx, errors.WithCode(code.C_ExampleProject_ExampleModule_ExampleErr, "error"), nil)
 	})
 
+	s.POST("/register", userHandler.Register)
+
 	return s
 }
