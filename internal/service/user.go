@@ -34,8 +34,13 @@ func (u *userService) Register(c context.Context, req *dto.RegisterReq) (res *dt
 		Email:    req.Email,
 	}
 
-	if err = u.userData.Create(c, &user); err != nil {
-		return nil, errors.Wrap(err, "UserService.Register")
+	if err = u.tm.Transaction(c, func(c context.Context) error {
+		if err = u.userData.Create(c, &user); err != nil {
+			return errors.Wrap(err, "UserService.Register")
+		}
+		return nil
+	}); err != nil {
+		return nil, err
 	}
 
 	res = &dto.RegisterRes{ID: user.ID, UID: user.InstanceID}
