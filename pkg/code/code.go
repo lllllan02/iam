@@ -15,7 +15,10 @@ const (
 // iam 项目
 const (
 	// user 模块
-	CDuplicateUsername = 10101
+	CInvalidUsername   = 10101
+	CDuplicateUsername = 10102
+	CInvalidEmail      = 10103
+	CDuplicaEmail      = 10104
 )
 
 var (
@@ -25,12 +28,15 @@ var (
 
 var codes = map[int]Coder{
 	CSuccess:      successCoder,
-	CBadRequest:   {CBadRequest, "[Bad Request] Incorrect request parameter.", ""},
+	CBadRequest:   {CBadRequest, "[Bad Request] Invalid request parameter.", ""},
 	CUnauthorized: {CUnauthorized, "[Unauthorized] Please log in.", ""},
 	CForbidden:    {CForbidden, "[Forbidden] Insufficient permissions to access.", ""},
 	CNotFound:     {CNotFound, "[Not Found] Record not found.", ""},
 	CInternalErr:  internalErrCoder,
 	C_ExampleProject_ExampleModule_ExampleErr: {C_ExampleProject_ExampleModule_ExampleErr, "ExampleProject.ExampleModule.ExampleErr", ""},
 
+	CInvalidUsername:   {CInvalidUsername, "Invalid username.", ""},
 	CDuplicateUsername: {CDuplicateUsername, "Username already exists!", ""},
+	CInvalidEmail:      {CInvalidEmail, "Invalid email", ""},
+	CDuplicaEmail:      {CDuplicaEmail, "Email already exists!", ""},
 }

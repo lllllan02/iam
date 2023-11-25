@@ -34,6 +34,8 @@ func (u *userService) Register(c context.Context, req *dto.RegisterReq) (res *dt
 		Email:    req.Email,
 	}
 
+	// TODO: Send verification code to email
+
 	if err = u.tm.Transaction(c, func(c context.Context) error {
 		if err = u.userData.Create(c, &user); err != nil {
 			return errors.Wrap(err, "UserService.Register")

@@ -1,6 +1,7 @@
 package stringutil
 
 import (
+	"regexp"
 	"unicode/utf8"
 )
 
@@ -42,4 +43,11 @@ func Reverse(s string) string {
 		utf8.EncodeRune(buf[size-start:], r)
 	}
 	return string(buf)
+}
+
+// IsAlphaNumberic returns whether the string
+// is composed of only letters and numbers.
+func IsAlphaNumberic(s string) bool {
+	re := regexp.MustCompile(`^[a-zA-Z0-9]+$`)
+	return re.MatchString(s)
 }

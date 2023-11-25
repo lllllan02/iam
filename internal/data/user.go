@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/lllllan02/iam/internal/model"
+	"github.com/lllllan02/iam/pkg/errors"
 )
 
 type UserData interface {
@@ -18,5 +19,8 @@ func NewUserData(data *Data) UserData {
 }
 
 func (u *userData) Create(c context.Context, user *model.User) error {
-	return u.DB(c).Create(&user).Error
+	if err := u.DB(c).Create(&user).Error; err != nil {
+		return errors.Wrap(err, "create user")
+	}
+	return nil
 }
