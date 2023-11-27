@@ -91,5 +91,9 @@ func initDefaultsRecursive(v *viper.Viper, t reflect.Type, prefix string) {
 }
 
 func (conf *Config) IsProdEnv() bool {
-	return strings.Contains(conf.Env, "prod")
+	return strings.ToLower(conf.Env) == "prod"
+}
+
+func (conf *Config) IsTestEnv() bool {
+	return strings.ToLower(conf.Env) == "test"
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/lllllan02/iam/internal/model"
 	"github.com/lllllan02/iam/pkg/config"
 	"github.com/lllllan02/iam/pkg/log"
 	"github.com/redis/go-redis/v9"
@@ -78,8 +79,24 @@ func NewDB(conf *config.Config, l *log.Logger) *gorm.DB {
 		panic(err)
 	}
 
+	// debug mode
 	if conf.Data.Mysql.Debug {
 		db = db.Debug()
+	}
+
+	// auto migrate if test env
+	if conf.IsTestEnv() {
+		var tables = []interface{}{
+			&model.User{},
+		}
+
+		if err := db.Migrator().DropTable(tables...); err != nil {
+			panic(err)
+		}
+
+		if err := db.AutoMigrate(tables...); err != nil {
+			panic(err)
+		}
 	}
 
 	return db
