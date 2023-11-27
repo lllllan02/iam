@@ -3,9 +3,9 @@ package model
 import (
 	"github.com/lllllan02/iam/pkg/code"
 	"github.com/lllllan02/iam/pkg/errors"
+	"github.com/lllllan02/iam/pkg/utils/encrypt"
 	"github.com/lllllan02/iam/pkg/utils/stringutil"
 	"github.com/lllllan02/iam/pkg/utils/validtor"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -50,11 +50,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	}
 
 	// encrypt password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return errors.Wrap(err, "encrypt password")
-	}
-	u.Password = string(hashedPassword)
+	u.Password = encrypt.Encrypt(u.Password)
 
 	return nil
 }
