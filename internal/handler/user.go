@@ -20,6 +20,16 @@ func NewUserHandler(handler *Handler, userService service.UserService) *UserHand
 	}
 }
 
+// Register godoc
+//
+//	@Summary		register user
+//	@Description	register
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			req	body		dto.RegisterReq	true	"register"
+//	@Success		200	{object}	resp.Result{data=dto.RegisterRes}
+//	@Router			/register [post]
 func (u *UserHandler) Register(c *gin.Context) {
 	var (
 		req *dto.RegisterReq

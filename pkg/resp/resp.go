@@ -6,6 +6,12 @@ import (
 	"github.com/lllllan02/iam/pkg/errors"
 )
 
+type Result struct {
+	Code      int    `json:"code"`
+	Message   string `json:"message"`
+	Reference string `json:"reference"`
+}
+
 func JsonResponse(c *gin.Context, err error, data interface{}) {
 	if data == nil {
 		data = gin.H{}

@@ -76,6 +76,10 @@ Temporary Items
 
 ### config yml ###
 *.yml
+*.json
+*.yaml
+*.toml
 
 ### log ###
 logs
+ 

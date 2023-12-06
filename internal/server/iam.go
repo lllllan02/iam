@@ -1,7 +1,10 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
+	"github.com/lllllan02/iam/api"
 	"github.com/lllllan02/iam/internal/handler"
 	"github.com/lllllan02/iam/internal/middleware"
 	"github.com/lllllan02/iam/pkg/code"
@@ -10,9 +13,8 @@ import (
 	"github.com/lllllan02/iam/pkg/log"
 	"github.com/lllllan02/iam/pkg/resp"
 	"github.com/lllllan02/iam/pkg/server/http"
-	swaggerfiles "github.com/swaggo/files"
+	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/swag/example/basic/docs"
 )
 
 func NewIAMServer(
@@ -28,13 +30,12 @@ func NewIAMServer(
 		http.WithServerPort(conf.Server.HttpPort),
 	)
 
-	// swagger doc
-	docs.SwaggerInfo.BasePath = "/v1"
-	s.GET("/swagger/*any", ginSwagger.WrapHandler(
-		swaggerfiles.Handler,
-		// ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", conf.GetInt("app.http.port"))),
-		ginSwagger.DefaultModelsExpandDepth(-1),
-	))
+	// use ginSwagger middleware to serve the API docs
+	api.SwaggerInfo.Title = "IAM 身份识别与管理系统"
+	api.SwaggerInfo.Version = "0.1"
+	api.SwaggerInfo.Description = "基于 Go 开发的身份识别与管理系统，可用于第三方登录及资源/权限管理"
+	api.SwaggerInfo.Host = fmt.Sprint("localhost:", conf.Server.HttpPort)
+	s.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// middleware
 	s.Use(
