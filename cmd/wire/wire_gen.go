@@ -28,7 +28,7 @@ func NewWire(configConfig *config.Config, logger *log.Logger) (*app.App, func(),
 	transaction := repository.NewTransaction(repo)
 	serviceService := service.NewService(logger, transaction)
 	userRepo := repository.NewUserRepo(repo)
-	userService := service.NewUserService(serviceService, userRepo)
+	userService := service.NewUserService(configConfig, serviceService, userRepo)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
 	httpServer := server.NewIAMServer(configConfig, logger, userHandler)
 	appApp := newApp(httpServer)

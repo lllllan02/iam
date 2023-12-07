@@ -15,7 +15,7 @@ func NewUserRepo(data *Repo) UserRepo {
 
 type userRepo struct{ *Repo }
 type UserRepo interface {
-	Create(c context.Context, user *model.User) error
+	Create(context.Context, *model.User) error
 	First(context.Context, ...func(*gorm.DB) *gorm.DB) (*model.User, error)
 
 	// ==================== func(*gorm.DB) *gorm.DB ====================
