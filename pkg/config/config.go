@@ -17,6 +17,10 @@ type Config struct {
 		Host     string `default:"0.0.0.0"`
 	}
 
+	Security struct {
+		JWTKey string `default:"hUlNMrcNzqEQ0Wl"`
+	}
+
 	Data struct {
 		Mysql struct {
 			Debug    bool   `default:"false"`

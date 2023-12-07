@@ -1,4 +1,4 @@
-package data
+package repository
 
 import (
 	"context"
@@ -18,14 +18,14 @@ type contextKey string
 
 const contextTxKey contextKey = "ctxTxKey"
 
-type Data struct {
+type Repo struct {
 	db     *gorm.DB
 	rdb    *redis.Client
 	logger *log.Logger
 }
 
-func NewData(db *gorm.DB, rdb *redis.Client, logger *log.Logger) *Data {
-	return &Data{
+func NewRepo(db *gorm.DB, rdb *redis.Client, logger *log.Logger) *Repo {
+	return &Repo{
 		db:     db,
 		rdb:    rdb,
 		logger: logger,
@@ -36,24 +36,24 @@ type Transaction interface {
 	Transaction(c context.Context, fn func(c context.Context) error) error
 }
 
-func NewTransaction(d *Data) Transaction {
-	return d
+func NewTransaction(r *Repo) Transaction {
+	return r
 }
 
 // DB return tx
 // If you need to create a Transaction, you must call DB(c) and Transaction(c, fn)
-func (d *Data) DB(c context.Context) *gorm.DB {
+func (r *Repo) DB(c context.Context) *gorm.DB {
 	v := c.Value(contextTxKey)
 	if v != nil {
 		if tx, ok := v.(*gorm.DB); ok {
 			return tx
 		}
 	}
-	return d.db.WithContext(c)
+	return r.db.WithContext(c)
 }
 
-func (d *Data) Transaction(c context.Context, fn func(c context.Context) error) error {
-	return d.db.WithContext(c).Transaction(func(tx *gorm.DB) error {
+func (r *Repo) Transaction(c context.Context, fn func(c context.Context) error) error {
+	return r.db.WithContext(c).Transaction(func(tx *gorm.DB) error {
 		c = context.WithValue(c, contextTxKey, tx)
 		return fn(c)
 	})

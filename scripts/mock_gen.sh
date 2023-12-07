@@ -10,5 +10,5 @@ mock() {
         done
 }
 
-mock data
+mock repository
 mock service

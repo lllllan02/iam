@@ -35,17 +35,32 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
-// Register mocks base method.
-func (m *MockUserService) Register(c context.Context, req *dto.RegisterReq) (*dto.RegisterRes, error) {
+// Login mocks base method.
+func (m *MockUserService) Login(arg0 context.Context, arg1 *dto.LoginReq) (*dto.LoginRes, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Register", c, req)
+	ret := m.ctrl.Call(m, "Login", arg0, arg1)
+	ret0, _ := ret[0].(*dto.LoginRes)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockUserServiceMockRecorder) Login(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockUserService)(nil).Login), arg0, arg1)
+}
+
+// Register mocks base method.
+func (m *MockUserService) Register(arg0 context.Context, arg1 *dto.RegisterReq) (*dto.RegisterRes, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Register", arg0, arg1)
 	ret0, _ := ret[0].(*dto.RegisterRes)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Register indicates an expected call of Register.
-func (mr *MockUserServiceMockRecorder) Register(c, req interface{}) *gomock.Call {
+func (mr *MockUserServiceMockRecorder) Register(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserService)(nil).Register), c, req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserService)(nil).Register), arg0, arg1)
 }

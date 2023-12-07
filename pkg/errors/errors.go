@@ -3,6 +3,7 @@ package errors
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -82,6 +83,14 @@ func Code(err error) int {
 		return e.code
 	}
 	return 0
+}
+
+func Is(err, target error) bool {
+	return errors.Is(err, target)
+}
+
+func As(err error, targer any) bool {
+	return errors.As(err, targer)
 }
 
 type withCode struct {

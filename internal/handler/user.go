@@ -46,3 +46,30 @@ func (u *UserHandler) Register(c *gin.Context) {
 
 	resp.JsonResponse(c, err, res)
 }
+
+// Login godoc
+//
+//	@Summary		user login
+//	@Description	login
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			req	body		dto.LoginReq	true	"register"
+//	@Success		200	{object}	resp.Result{data=dto.LoginRes}
+//	@Router			/login [post]
+func (u *UserHandler) Login(c *gin.Context) {
+	var (
+		req *dto.LoginReq
+		res *dto.LoginRes
+		err error
+	)
+
+	if err = c.ShouldBind(&req); err != nil {
+		resp.BadRequestError(c)
+		return
+	}
+
+	res, err = u.userService.Login(c, req)
+
+	resp.JsonResponse(c, err, res)
+}

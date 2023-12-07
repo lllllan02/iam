@@ -2,29 +2,36 @@ package service
 
 import (
 	"context"
+	"time"
 
-	"github.com/lllllan02/iam/internal/data"
 	"github.com/lllllan02/iam/internal/dto"
 	"github.com/lllllan02/iam/internal/model"
+	"github.com/lllllan02/iam/internal/repository"
+	"github.com/lllllan02/iam/pkg/code"
 	"github.com/lllllan02/iam/pkg/errors"
+	"github.com/lllllan02/iam/pkg/utils/encrypt"
+	"github.com/lllllan02/iam/pkg/utils/jwt"
 )
 
-type UserService interface {
-	// Register is used to register a user.
-	Register(c context.Context, req *dto.RegisterReq) (res *dto.RegisterRes, err error)
+func NewUserService(service *Service, userData repository.UserRepo) UserService {
+	return &userService{
+		Service:  service,
+		userData: userData,
+	}
 }
 
 type userService struct {
 	*Service
 
-	userData data.UserData
+	jwt      *jwt.JWT
+	userData repository.UserRepo
 }
+type UserService interface {
+	// Register is used to register a user.
+	Register(context.Context, *dto.RegisterReq) (*dto.RegisterRes, error)
 
-func NewUserService(service *Service, userData data.UserData) UserService {
-	return &userService{
-		Service:  service,
-		userData: userData,
-	}
+	// Login is used for user login
+	Login(context.Context, *dto.LoginReq) (*dto.LoginRes, error)
 }
 
 func (u *userService) Register(c context.Context, req *dto.RegisterReq) (res *dto.RegisterRes, err error) {
@@ -36,15 +43,29 @@ func (u *userService) Register(c context.Context, req *dto.RegisterReq) (res *dt
 
 	// TODO: Send verification code to email
 
-	if err = u.tm.Transaction(c, func(c context.Context) error {
-		if err = u.userData.Create(c, &user); err != nil {
-			return errors.Wrap(err, "UserService.Register")
-		}
-		return nil
-	}); err != nil {
-		return nil, err
+	if err = u.userData.Create(c, &user); err != nil {
+		return nil, errors.Wrap(err, "register")
 	}
 
 	res = &dto.RegisterRes{ID: user.ID, UID: user.InstanceID}
+	return
+}
+
+func (u *userService) Login(c context.Context, req *dto.LoginReq) (res *dto.LoginRes, err error) {
+	user, err := u.userData.First(c, u.userData.WithUsername(req.Username))
+	if err != nil {
+		return nil, errors.Wrap(err, "login")
+	}
+
+	if user.Password != encrypt.Encrypt(req.Password) {
+		return nil, errors.WithCode(code.CIncorrectPassword, "verify password")
+	}
+
+	token, err := u.jwt.GenToken(user.ID, time.Hour*24)
+	if err != nil {
+		return nil, errors.Wrap(err, "generate token")
+	}
+
+	res = &dto.LoginRes{Token: token}
 	return
 }

@@ -19,6 +19,8 @@ const (
 	CDuplicateUsername = 10102
 	CInvalidEmail      = 10103
 	CDuplicaEmail      = 10104
+	CUsernameNotFound  = 10105
+	CIncorrectPassword = 10106
 )
 
 var (
@@ -36,7 +38,9 @@ var codes = map[int]Coder{
 	C_ExampleProject_ExampleModule_ExampleErr: {C_ExampleProject_ExampleModule_ExampleErr, "ExampleProject.ExampleModule.ExampleErr", ""},
 
 	CInvalidUsername:   {CInvalidUsername, "Invalid username.", ""},
-	CDuplicateUsername: {CDuplicateUsername, "Username already exists!", ""},
-	CInvalidEmail:      {CInvalidEmail, "Invalid email", ""},
-	CDuplicaEmail:      {CDuplicaEmail, "Email already exists!", ""},
+	CDuplicateUsername: {CDuplicateUsername, "Username already exists.", ""},
+	CInvalidEmail:      {CInvalidEmail, "Invalid email.", ""},
+	CDuplicaEmail:      {CDuplicaEmail, "Email already exists.", ""},
+	CUsernameNotFound:  {CUsernameNotFound, "Username not found.", ""},
+	CIncorrectPassword: {CIncorrectPassword, "Incorrect password", ""},
 }

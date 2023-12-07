@@ -5,8 +5,8 @@ package wire
 
 import (
 	"github.com/google/wire"
-	"github.com/lllllan02/iam/internal/data"
 	"github.com/lllllan02/iam/internal/handler"
+	"github.com/lllllan02/iam/internal/repository"
 	"github.com/lllllan02/iam/internal/server"
 	"github.com/lllllan02/iam/internal/service"
 	"github.com/lllllan02/iam/pkg/app"
@@ -29,12 +29,12 @@ var serviceSet = wire.NewSet(
 	service.NewUserService,
 )
 
-var dataSet = wire.NewSet(
-	data.NewDB,
-	data.NewRedis,
-	data.NewData,
-	data.NewTransaction,
-	data.NewUserData,
+var repoSet = wire.NewSet(
+	repository.NewDB,
+	repository.NewRedis,
+	repository.NewTransaction,
+	repository.NewRepo,
+	repository.NewUserRepo,
 )
 
 func newApp(iamServer *http.Server) *app.App {
@@ -50,6 +50,6 @@ func NewWire(*config.Config, *log.Logger) (*app.App, func(), error) {
 		serverSet,
 		handlerSet,
 		serviceSet,
-		dataSet,
+		repoSet,
 	))
 }

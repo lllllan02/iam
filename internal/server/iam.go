@@ -51,6 +51,7 @@ func NewIAMServer(
 	})
 
 	s.POST("/register", userHandler.Register)
+	s.POST("/login", userHandler.Login)
 
 	return s
 }
